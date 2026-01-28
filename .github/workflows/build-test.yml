@@ -275,7 +275,7 @@ jobs:
       # - test-2404-clang
       # - test-2204-gcc
       # - test-2204-clang
-      - lint-py
+      # - lint-py
 
     runs-on: ubuntu-24.04
 
