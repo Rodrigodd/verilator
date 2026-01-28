@@ -90,6 +90,13 @@ jobs:
           source .venv/bin/activate
           ./ci/ci-script.bash
 
+      - name: Breakpoint if tests failed
+        # if: failure()
+        uses: namespacelabs/breakpoint-action@v0
+        with:
+          duration: 30m
+          authorized-users: Rodrigodd
+
       - name: Combine code coverage data
         if: ${{ inputs.dev-gcov }}
         run: |
