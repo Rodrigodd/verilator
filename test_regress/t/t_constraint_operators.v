@@ -83,7 +83,7 @@ module t;
       $write("p.x %% 5 / 2 = %0h\n", (p.x % 5) / 2);
       $write("p.b %% 99 = %0h\n", p.b % 99);
       $write("p.b %% 99 / 7 = %0h\n", (p.b % 99) / 7);
-      if (int'((p.x % 5) / 2) != (p.b % 99) / 7) $stop;
+      if (int'((p.x % 5) / 2) == (p.b % 99) / 7) $stop;
       if (p.x * 9 == p.b * 3) $stop;
       if (p.tiny && p.x == 10) $stop;
       if ({p.c, p.b} == 'h1111) $stop;
