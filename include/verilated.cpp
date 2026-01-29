@@ -335,9 +335,6 @@ VlRNG::VlRNG() VL_MT_SAFE {
     // Advance the *source* so it can later generate a new number
     // Xoroshiro128+ algorithm
     fromr.rand64();
-    printf("VlRNG default constructed from %016" PRIx64 " %016" PRIx64 " to %016" PRIx64
-           " %016" PRIx64 "\n",
-           fromr.m_state[0], fromr.m_state[1], m_state[0], m_state[1]);
 }
 
 // Xoroshiro128** algorithm, copied under public domain from
@@ -348,8 +345,6 @@ VlRNG::VlRNG(uint64_t seed) VL_MT_SAFE {
     // Seed using SplitMix64 algorithm
     m_state[0] = vl_splitmix64(seed /*ref; seed changed*/);
     m_state[1] = vl_splitmix64(seed /*ref; seed changed*/);
-    printf("VlRNG seeded from %016" PRIx64 " with %016" PRIx64 " %016" PRIx64 "\n", seed,
-           m_state[0], m_state[1]);
 }
 
 static uint64_t vl_rolt(const uint64_t x, int k) VL_MT_SAFE { return (x << k) | (x >> (64 - k)); }
@@ -362,9 +357,6 @@ uint64_t VlRNG::rand64() VL_MT_UNSAFE {
     s1 ^= s0;
     m_state[0] = vl_rolt(s0, 24) ^ s1 ^ (s1 << 16);  // a, b
     m_state[1] = vl_rolt(s1, 37);  // c
-
-    printf("VlRNG rand64 %016" PRIx64 " %016" PRIx64 " -> %016" PRIx64 "\n", m_state[0],
-           m_state[1], result);
 
     return result;
 }
@@ -384,8 +376,6 @@ void VlRNG::srandom(uint64_t n) VL_MT_UNSAFE {
     // This causes a loss of ~ 1 bit of seed entropy, no big deal
     if (VL_COUNTONES_I(m_state[0]) < 10) m_state[0] = ~m_state[0];
     if (VL_COUNTONES_I(m_state[1]) < 10) m_state[1] = ~m_state[1];
-    printf("VlRNG srandom from %016" PRIx64 " with %016" PRIx64 " %016" PRIx64 "\n", n, m_state[0],
-           m_state[1]);
 }
 std::string VlRNG::get_randstate() const VL_MT_UNSAFE {
     // Though not stated in IEEE, assumption is the string must be printable
@@ -420,7 +410,6 @@ static uint32_t vl_sys_rand32() VL_MT_SAFE {
     return (std::rand() << 16) ^ std::rand();
 #else
     uint32_t seed = (lrand48() << 16) ^ lrand48();
-    printf("[debug] vl_sys_rand32=%04" PRIx32 "\n", seed);
     return seed;
 #endif
 }
@@ -3110,7 +3099,6 @@ void VerilatedContext::randSeed(int val) VL_MT_SAFE {
     // As we have per-thread state, the epoch must be static,
     // and so the rand seed's mutex must also be static
     const VerilatedLockGuard lock{VerilatedContextImp::s().s_randMutex};
-    printf("[debug] set randSeed to %d\n", val);
     m_s.m_randSeed = val;
     const uint64_t newEpoch = VerilatedContextImp::s().s_randSeedEpoch + 1;
     // Observers must see new epoch AFTER seed updated

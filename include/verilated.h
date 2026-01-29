@@ -539,10 +539,7 @@ public:
     /// 2 = Randomize all bits
     void randReset(int val) VL_MT_SAFE;
     /// Return default random seed
-    int randSeed() const VL_MT_SAFE {
-        printf("[debug] randSeed=%d\n", m_s.m_randSeed);
-        return m_s.m_randSeed;
-    }
+    int randSeed() const VL_MT_SAFE { return m_s.m_randSeed; }
     /// Set default random seed, 0 = seed it automatically
     void randSeed(int val) VL_MT_SAFE;
 
