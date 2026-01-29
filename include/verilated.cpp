@@ -329,12 +329,9 @@ static uint64_t vl_splitmix64(uint64_t& x) VL_MT_UNSAFE {
 }
 
 VlRNG::VlRNG() VL_MT_SAFE {
-    // Starting point for this new class comes from the global RNG
     VlRNG& fromr = vl_thread_rng();
-    m_state = fromr.m_state;
-    // Advance the *source* so it can later generate a new number
-    // Xoroshiro128+ algorithm
-    fromr.rand64();
+    m_state[0] = fromr.rand64();
+    m_state[1] = fromr.rand64();
 }
 
 // Xoroshiro128** algorithm, copied under public domain from
@@ -365,12 +362,8 @@ uint64_t VlRNG::vl_thread_rng_rand64() VL_MT_SAFE {
     return fromr.rand64();
 }
 void VlRNG::srandom(uint64_t n) VL_MT_UNSAFE {
-    m_state[0] = n;
-    m_state[1] = m_state[0];
-    // Fix state as algorithm is slow to randomize if many zeros
-    // This causes a loss of ~ 1 bit of seed entropy, no big deal
-    if (VL_COUNTONES_I(m_state[0]) < 10) m_state[0] = ~m_state[0];
-    if (VL_COUNTONES_I(m_state[1]) < 10) m_state[1] = ~m_state[1];
+    m_state[0] = vl_splitmix64(n /*ref; n changed*/);
+    m_state[1] = vl_splitmix64(n /*ref; n changed*/);
 }
 std::string VlRNG::get_randstate() const VL_MT_UNSAFE {
     // Though not stated in IEEE, assumption is the string must be printable
