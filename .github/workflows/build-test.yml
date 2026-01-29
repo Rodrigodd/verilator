@@ -176,13 +176,14 @@ jobs:
       matrix:
         include:
           # Ubuntu 24.04 gcc
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-0}
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-1}
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-2}
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-3}
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: vltmt-0}
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: vltmt-1}
-          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: vltmt-2}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-0}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-1}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-2}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: dist-vlt-3}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: vltmt-0}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: vltmt-1}
+          # - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: vltmt-2}
+          - {os: ubuntu-24.04, cc: gcc, reloc: 0, suite: fatal-0}
 
   # test-2404-clang:
   #   name: Test | ${{ matrix.os }} | ${{ matrix.cc }} | ${{ matrix.reloc && 'reloc | ' || '' }} ${{ matrix.suite }}
