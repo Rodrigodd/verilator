@@ -362,12 +362,7 @@ uint64_t VlRNG::rand64() VL_MT_UNSAFE {
 }
 uint64_t VlRNG::vl_thread_rng_rand64() VL_MT_SAFE {
     VlRNG& fromr = vl_thread_rng();
-    const uint64_t result = fromr.m_state[0] + fromr.m_state[1];
-    fromr.m_state[1] ^= fromr.m_state[0];
-    fromr.m_state[0] = (((fromr.m_state[0] << 55) | (fromr.m_state[0] >> 9)) ^ fromr.m_state[1]
-                        ^ (fromr.m_state[1] << 14));
-    fromr.m_state[1] = (fromr.m_state[1] << 36) | (fromr.m_state[1] >> 28);
-    return result;
+    return fromr.rand64();
 }
 void VlRNG::srandom(uint64_t n) VL_MT_UNSAFE {
     m_state[0] = n;
@@ -422,13 +417,7 @@ VlRNG& VlRNG::vl_thread_rng() VL_MT_SAFE {
     if (VL_UNLIKELY(t_seedEpoch != VerilatedContextImp::randSeedEpoch())) {
         // Set epoch before state, to avoid race case with new seeding
         t_seedEpoch = VerilatedContextImp::randSeedEpoch();
-        // Same as srandom() but here as needs to be VL_MT_SAFE
-        t_rng.m_state[0] = Verilated::threadContextp()->impp()->randSeedDefault64();
-        t_rng.m_state[1] = t_rng.m_state[0];
-        // Fix state as algorithm is slow to randomize if many zeros
-        // This causes a loss of ~ 1 bit of seed entropy, no big deal
-        if (VL_COUNTONES_I(t_rng.m_state[0]) < 10) t_rng.m_state[0] = ~t_rng.m_state[0];
-        if (VL_COUNTONES_I(t_rng.m_state[1]) < 10) t_rng.m_state[1] = ~t_rng.m_state[1];
+        t_rng.srandom(Verilated::threadContextp()->impp()->randSeedDefault64());
     }
     return t_rng;
 }
